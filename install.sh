@@ -8,7 +8,7 @@ COMPOSE_TEMPLATE="version: '3.0'
 
 services:
   kegbot:
-    image: kegbot/server:snapchot
+    image: kegbot/server:snapshot
     restart: always
     ports:
       - '8000:8000'
