@@ -8,7 +8,7 @@ COMPOSE_TEMPLATE="version: '3.0'
 
 services:
   kegbot:
-    image: kegbot/server:latest
+    image: kegbot/server:snapchot
     restart: always
     ports:
       - '8000:8000'
@@ -26,7 +26,7 @@ services:
       KEGBOT_INSECURE_SHARED_API_KEY: '_kegbot_insecure_shared_api_key_'
 
   workers:
-    image: kegbot/server:latest
+    image: kegbot/server:snapshot
     restart: always
     command: bin/kegbot run_workers
     volumes:
@@ -135,19 +135,20 @@ ensure_python() {
     log "Python version ${python_version} - great!"
 }
 
+# TODO this is broken
 ensure_docker_compose() {
-    log "Checking for docker-compose ..."
-    docker_compose_status=`which docker-compose`
+    log "Checking for docker compose ..."
+    docker_compose_status=`which docker compose`
     if [ $? -ne 0 ]; then
-        log "docker-compose not installed, installing ..."
+        log "docker compose not installed, installing ..."
         sudo pip3 install docker-compose
     fi
 
-    docker_compose=`docker-compose --version`
+    docker_compose=`docker compose --version`
     if [ $? -ne 0 ]; then
-        log "docker-compose version could not be determined"
+        log "docker compose version could not be determined"
     else
-        log "docker-compose version ${docker_compose} - great!"
+        log "docker compose version ${docker_compose} - great!"
     fi
 }
 
@@ -259,18 +260,18 @@ do_install() {
     sed -i -e "s%_kegbot_insecure_shared_api_key_%${KEGBOT_INSECURE_SHARED_API_KEY}%" ${DOCKER_COMPOSE_FILE}
 
     log "Fetching images ..."
-    docker-compose -f ${DOCKER_COMPOSE_FILE} pull
+    docker compose -f ${DOCKER_COMPOSE_FILE} pull
 
     log "Done!"
     echo ""
     echo "To run, do the following: "
     echo ""
     echo "    $ cd ${KEGBERRY_DIR}"
-    echo "    $ docker-compose up"
+    echo "    $ docker compose up"
     echo ""
     echo "To run in the background, use:"
     echo ""
-    echo "    $ docker-compose up -d"
+    echo "    $ docker compose up -d"
     echo ""
     echo "Enjoy!"
 
